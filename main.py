@@ -1,9 +1,9 @@
-from fastapi import FASTAPI, Request
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from predictor import train_and_predict_rainfall
 
-app = FASTAPI()
+app = FastAPI()
 
 # Allow CORS for Frontend
 app.add_middleware(
@@ -20,7 +20,7 @@ class WeatherInput(BaseModel):
     windSpeed: float
     precipitation: float
     cloudCover: float
-    preesure: float
+    pressure: float
 
 @app.post("/api/post")
 def predict(input: WeatherInput):

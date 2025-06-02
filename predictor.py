@@ -34,7 +34,7 @@ def train_and_predict_rainfall(test_input):
     model.fit(X_train, y_train)
 
     # Predict on given data
-    test_scaled = scaler.fit_transform([test_input])
+    test_scaled = scaler.transform([test_input])
     prediction = model.predict(test_scaled)[0]
 
     if prediction:

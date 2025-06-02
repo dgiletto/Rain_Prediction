@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Rainfall Prediction</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-blue-50 min-h-screen flex items-center justify-center">
+  <div class="bg-white p-8 rounded-xl shadow-md w-full max-w-md">
+    <h1 class="text-2xl font-bold mb-4 text-center text-blue-700">Rainfall Predictor</h1>
+    <form id="rainForm" class="space-y-4">
+      <div>
+        <label class="block text-sm font-medium">Temperature (°F)</label>
+        <input type="number" step="any" name="temperature" class="w-full border rounded p-2" required>
+      </div>
+      <div>
+        <label class="block text-sm font-medium">Humidity (%)</label>
+        <input type="number" step="any" name="humidity" class="w-full border rounded p-2" required>
+      </div>
+      <div>
+        <label class="block text-sm font-medium">Wind Speed (km/h)</label>
+        <input type="number" step="any" name="windSpeed" class="w-full border rounded p-2" required>
+      </div>
+      <div>
+        <label class="block text-sm font-medium">Precipitation (mm)</label>
+        <input type="number" step="any" name="precipitation" class="w-full border rounded p-2" required>
+      </div>
+      <div>
+        <label class="block text-sm font-medium">Cloud Cover (%)</label>
+        <input type="number" step="any" name="cloudCover" class="w-full border rounded p-2" required>
+      </div>
+      <div>
+        <label class="block text-sm font-medium">Pressure (hPa)</label>
+        <input type="number" step="any" name="pressure" class="w-full border rounded p-2" required>
+      </div>
+      <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded">Predict</button>
+    </form>
+    <div id="result" class="mt-6 text-center text-lg font-semibold text-gray-700"></div>
+  </div>
+
+  <script>
+    const form = document.getElementById('rainForm');
+    const resultDiv = document.getElementById('result');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const formData = new FormData(form);
+      const inputData = {
+        temperature: parseFloat(formData.get("temperature")),
+        humidity: parseFloat(formData.get("humidity")),
+        windSpeed: parseFloat(formData.get("windSpeed")),
+        precipitation: parseFloat(formData.get("precipitation")),
+        cloudCover: parseFloat(formData.get("cloudCover")),
+        pressure: parseFloat(formData.get("pressure")),
+      };
+
+      resultDiv.textContent = "Predicting...";
+
+      try {
+        const response = await fetch("http://localhost:8000/api/post", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(inputData),
+        });
+
+        const willRain = await response.json();
+        resultDiv.textContent = willRain ? "🌧️ It will rain tomorrow 🌧️" : "☀️ No rain expected tomorrow ☀️";
+      } catch (error) {
+        resultDiv.textContent = "⚠️ Error contacting prediction server ⚠️";
+        console.error(error);
+      }
+    });
+  </script>
+</body>
+</html>
